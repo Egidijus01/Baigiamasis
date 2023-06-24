@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% load static %}
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Recursive:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://kit.fontawesome.com/918b76cfb2.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        
+
+        <nav class="navigacija">
+            <div class="logo-container">
+                {% load static %}
+              <a href="{%url 'index'%}"><img id="logo" src="{% static 'assets/logo.png' %}"  alt=""></a>
+              
+            </div>
+            <ul class="nav-links">
+                <div class="always">
+                    <li><a class="nav-link" href="{%url 'index'%}">Home</a></li>
+                    <li><a class="nav-link" href="{%url 'barbers'%}">Barbers</a></li>
+                </div>
+                <div class="logged">
+                    <li><a class="nav-link" href=""><i class="fa-solid fa-message"></i></a></li>
+                    <!-- <li><a class="nav-link" href="">History</a></li>
+                    <li><a class="nav-link" href="">Settings</a></li> -->
+                    <li><a class="nav-link profile"><img id="profile" src="{% static 'assets/profile_pic.png' %}" alt=""> </a>
+                        <div class="options" id="options">
+                            <ul>
+                                <li>History</li>
+                                <li>hello</li>
+                                <li>Settings</li>
+                            </ul>
+                        </div>
+                    </li>
+                </div>
+                
+            </ul>
+        </nav>
+    </header>
+
+
+
+    <main>
+        <div class="content">{% block "content" %}{% endblock %}</div>
+    </main>
+    <footer>
+        All rights reserved
+    </footer>
+    <script src="{% static 'js/base.js'%}" defer></script>
+</body>
+</html>

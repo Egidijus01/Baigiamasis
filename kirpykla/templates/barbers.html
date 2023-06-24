@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block "content" %}
+<div>
+{% for barber in barbers %}
+    <div><a href="{% url 'barber' barber.id %}">{{ barber.first_name }} {{ barber.last_name }}</a></div>
+
+{% endfor %}
+</div>
+{% endblock %}

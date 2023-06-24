@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block "content" %}
+{% load static %}
+  <link rel="stylesheet" href="{% static 'css/index.css' %}">
+
+
+  {% load static %}
+
+
+    <div class="hero">
+        <h1 class="name">"Hairhub" Jūsų vartai į nepriekaištingą plaukų priežiūrą</h1>
+        <img class="forest" src="{% static 'assets/forest.svg' %}" alt="My image">
+        <i class="fa-solid fa-circle-info info"></i>    
+    </div>
+    <p class="about">
+        Sveiki atvykę į "Hairhub", internetinę platformą kirpėjams, bei klientams visame pasaulyje!
+        Mūsų misija  sujungti talentingus profesionalus kaip jūs ir sujungti su naujovių ieškančiais klientais,
+        bei sukurti inovatyvią bendruomenę ir ryšio jausmą.
+        Su mūsų naujausiomis funkcijomis, mes esame
+        čia, kad įkvėptumėme jus ir padėtume pakelti jūsų plaukų stilizavimo žaidimą į naujas aukštumas.
+
+    </p>
+  <section class="tikslas">
+<h2 class="target">Mūsų tikslas</h2>
+
+    <div class="cards">
+        <div class="card">
+            <h4>Išplėsti savo tinklą</h4>
+            <p>Jungiam žmones sukurta tam, kad sujungtų kirpėjus iš įvairių sričių, su skirtinga patirtimi su naujų potyrių ieškančiais klientais. </p>
+        </div>
+        <div class="card">
+            <h4>Patogumas</h4>
+            <p>Užsisakykite vietą kirpykloje ir sumokėkite bankiniu pavedimu tiesiai iš namų komforto ar betkur. Susirašykite su kirpėju kokio stiliaus norėtumėte, ir jums liks tik atvykti nurodytu adresu į kirpyklą.</p>
+        </div>
+        <div class="card">
+            <h4>Parodykite savo įgūdžius</h4>
+            <p>suteikia jums galimybę įspūdingai pristatyti savo talentą ir kūrybiškumą. Sukurkite asmeninį profilį, įkraukite savo portfelį ir leiskite savo darbui kalbėti už save. </p>
+        </div>
+        <div class="card">
+            <h4>Bendradarbiavimas</h4>
+            <p>Platforma leis tiek kirpėjui, tiek klientui atrasti naujus stilius, kurie jums labiausiai tiks.</p>
+        </div>
+
+
+  </section>
+    
+
+
+    </div>
+
+{% endblock %}

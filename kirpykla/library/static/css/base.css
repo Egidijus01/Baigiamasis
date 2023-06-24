@@ -1,0 +1,156 @@
+*{
+    font-family: 'Recursive', sans-serif;
+}
+
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Nunito', sans-serif;
+    background-color: #5cdb95;
+}
+body{
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: 50px auto 150px;
+    grid-gap: 10px;
+    grid-template-areas:
+        "a a a a a a a a a a a a"
+        "a a a a a a a a a a a a"
+        "m m m m m m m m m m m m"
+        "m m m m m m m m m m m m"
+        "m m m m m m m m m m m m"
+        "f f f f f f f f f f f f"
+}
+
+header {
+    grid-area: a;
+    display: grid;
+    
+}
+
+main {
+    grid-area: m;
+    padding: 10px;
+}
+
+aside {
+    grid-area: s;
+}
+
+footer {
+    grid-area: f;
+}
+
+.logo-container,
+.nav-links {
+  display: flex;
+}
+
+nav {
+    flex: 2;
+  display: flex;
+}
+
+.logo-container {
+    align-items: center;
+    position: relative;
+    left: 5%;
+  }
+
+/* header nav ul {
+    color: #05386b;
+    
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+} */
+
+footer {
+    background-color: #05386b;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+
+#logo{
+    max-width: 120px;
+    max-height: 120px;
+    
+}
+.logo-container {
+    display: 'none'
+    
+}
+  
+.logo-container.open {
+    
+    display: 'block'
+}
+.nav-links {
+    justify-content: space-around;
+  list-style: none;
+  flex: 1; /* Let it occupy rest of the container */
+  align-items: center;
+  }
+  
+  .nav-link {
+    color: #05386b;;
+    font-size:20px;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .profile {
+    position: relative;
+  }
+  
+  .options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #5cdb95;
+    color: #05386b;
+    /* border: 1px solid #ccc; */
+    padding: 5px;
+    display: none;
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  .options ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .options li {
+    padding: 5px;
+    cursor: pointer;
+  }
+  
+
+
+.profile:hover .options {
+    position: absolute;
+   
+    opacity: 1;
+  }
+#profile {
+    width: 100px;
+}
+.always{
+    width: 300px;
+    display: flex;
+    justify-content: space-between;
+
+}
+.logged{
+    width: 150px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block "content" %}
+    <div class="container barber">
+    <h4>{{ barber.first_name }} {{ barber.last_name }}</h4>
+    <hr/>
+    <p>{{ barber.about }}</p>
+    </hr>
+    </br>
+    <!-- <h5>Mes turime šias {{ author.first_name }} {{ author.last_name }} knygas:</h5>
+    {% for i in author.books.all %}
+       <li>{{ i.title }}</li>
+    {% endfor %} -->
+    </div>
+{% endblock %}

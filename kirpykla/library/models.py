@@ -30,7 +30,7 @@ class Barber(models.Model):
     rating = models.ForeignKey(Rating, on_delete=models.SET_NULL, null=True)
     login_name = models.CharField('Prisijungimo vardas', max_length=20)
     # password =
-
+    cover = models.ImageField('Viršelis', upload_to='covers', null=True, blank=True)
     def __str__(self):
         return f'{self.name} {self.last_name}'
 

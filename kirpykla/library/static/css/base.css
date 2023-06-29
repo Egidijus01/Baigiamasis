@@ -143,14 +143,43 @@ footer {
     width: 100px;
 }
 .always{
-    width: 300px;
+    width: 450px;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
 
 }
 .logged{
-    width: 150px;
+    width: 250px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
+.search{
+  border-radius: 15px;
+  padding: 7px;
+}
+a{
+  text-decoration: none;
+}
+a:link {
+  color: #05386b;
+}
+
+/* visited link */
+a:visited {
+  color: #05386b;
+}
+
+/* mouse over link */
+a:hover {
+  color: #05386b;
+  text-decoration: none;
+}
+
+
+/* selected link */
+a:active {
+  color: #05386b;
+  text-decoration: none;
+}
+  

@@ -1,10 +1,40 @@
 {% extends "base.html" %}
 
 {% block "content" %}
-<div>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/barbers.css' %}">
+<div class="cards">
 {% for barber in barbers %}
-    <div><a href="{% url 'barber' barber.id %}">{{ barber.first_name }} {{ barber.last_name }}</a></div>
-
+            <div class="card">
+                {% if barber.cover %}
+                <img class="cover" src="{{ barber.cover.url }}" class="card-img-top" alt="...">
+                {% else %}
+                <img src="{% static 'assets/no-image.png' %}" class="card-img-top">
+                {% endif %}
+                <a class="name" href="{% url 'barber' barber.id %}">{{ barber.name }} {{ barber.last_name }}</a>
+                <p class="rating">{{ barber.rating }}/5</p>
+    
+            </div>
+            
 {% endfor %}
+</div>
+<div class="puslapiai">
+    <nav>
+        {% if barbers.has_other_pages %}
+            <ul class="">
+                {% for barber in barbers.paginator.page_range %}
+                    {% if barbers.number == barber %}
+                        <li class="">
+                            <a class="">{{ barber }}</a>
+                        </li>
+                    {% else %}
+                        <li class="">
+                            <a class="" href="?page={{ barber }}">{{ barber }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </nav>
 </div>
 {% endblock %}

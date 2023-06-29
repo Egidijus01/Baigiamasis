@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block "content" %}
+  <h1>Paieškos pagal "{{query}}" rezultatai:</h1>
+  </br>
+  {% load static %}
+  {% if barbers %}
+  <ul>
+    {% for barber in barbers %}
+      <li>
+        {% if barber.cover %}
+                <img class="cover" src="{{ barber.cover.url }}" class="card-img-top" alt="...">
+                {% else %}
+                <img src="{% static 'assets/no-image.png' %}" class="card-img-top">
+                {% endif %}
+                <a class="name" href="{% url 'barber' barber.id %}">{{ barber.name }} {{ barber.last_name }}</a>
+    
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>Oops. Nieko neradome :(</p>
+  {% endif %}
+
+  {% endblock %}

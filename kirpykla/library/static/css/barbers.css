@@ -1,0 +1,25 @@
+.content{
+
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+}
+
+
+.card{
+    width: 800px;
+    box-shadow: 0px 3px 15px rgba(22, 112, 93, 0.2);
+    display: flex;
+    padding: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+    justify-content: space-around;
+}
+.cover{
+    border-radius: 10px;
+}
+.puslapiai{
+    text-align: center;
+    width: 800px;
+
+}

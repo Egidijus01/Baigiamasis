@@ -1,11 +1,15 @@
 import uuid
 from datetime import datetime
+from django.contrib.auth.models import User
 
 from django.db import models
 
 # Create your models here.
 
 class Rating(models.Model):
+    barber = models.ForeignKey('Barber', on_delete=models.SET_NULL, null=True, blank=True)
+    reviewer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    date_created = models.DateTimeField(auto_now_add=True)
     RATING_CHOICES = (
         ("-", "-"),
         ("1", "1"),
@@ -16,34 +20,29 @@ class Rating(models.Model):
 
     )
     rating = models.CharField(max_length=10, choices=RATING_CHOICES, default="-")
+    content = models.TextField('Atsiliepimas', max_length=2000, default='')
+    
+    class Meta:
+        verbose_name = "Atsiliepimas"
+        verbose_name_plural = 'Atsiliepimai'
+        ordering = ['-date_created']
+    
 
     def __str__(self):
         return self.rating
 
 
 class Barber(models.Model):
-    # id = models.UUIDField(primary_key=True, default=uuid.uuid4(), help_text='Unikalus kirpejo kodas')
     name = models.CharField('Vardas', max_length=50, help_text='Kirpejo vardas')
     last_name = models.CharField('Pavarde', max_length=50, help_text='Kirpejo pavarde')
     email = models.EmailField('Elektroninis pastas')
     about = models.TextField('Apie', max_length=200, help_text='Apie kirpeja')
-    rating = models.ForeignKey(Rating, on_delete=models.SET_NULL, null=True)
     login_name = models.CharField('Prisijungimo vardas', max_length=20)
-    # password =
+
     cover = models.ImageField('Viršelis', upload_to='covers', null=True, blank=True)
     def __str__(self):
         return f'{self.name} {self.last_name}'
 
-
-class User(models.Model):
-    name = models.CharField('Vardas', max_length=50, help_text='Naudotojo vardas')
-    last_name = models.CharField('Pavarde', max_length=50, help_text='Naudotojo pavarde')
-    email = models.EmailField('Elektroninis pastas')
-    login_name = models.CharField('Prisijungimo vardas', max_length=20)
-    # password =
-
-    def __str__(self):
-        return f'{self.name} {self.last_name}'
 
 
 
@@ -70,7 +69,7 @@ class Available_times(models.Model):
         ("7 PM", "7 PM"),
         ("7:30 PM", "7:30 PM"),
     )
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
     barber = models.ForeignKey(Barber, on_delete=models.SET_NULL, null=True, blank=True)
     service = models.ManyToManyField(Services)
     day = models.DateField(default=datetime.now)

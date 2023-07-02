@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+
+
+{% block "content" %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/register.css' %}">
+
+    <div class="">
+        
+        {% if messages %}
+        
+            {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'info' %}success{% endif %}" role="alert">
+                {{ message }}
+        </div>
+            {% endfor %}
+        
+    {% endif %}
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+        <form method="post">
+            <h3>Registracija</h3><br/>
+            {% csrf_token %}
+            <div class="">
+                <label for="username">Vartotojo vardas</label>
+                <input name="username" type="text" class="" id="username" aria-describedby="usernameHelp">
+                <small id="usernameHelp" class="">Iki 150 simbolių.</small>
+            </div>
+            <div class="">
+                <label for="exampleInputEmail1">El. paštas</label>
+                <input name="email" type="email" class="" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <small id="emailHelp" class="">Nesidalinsime su niekuo, nesiųsime jokio spamo.
+                    Reikalingas naujam slaptažodžiui išsiųsti. </small>
+            </div>
+            <div class="">
+                <label for="">Slaptažodis</label>
+                <input name="password" type="password" class="" id="password" aria-describedby="pwdHelp">
+                <small id="pwdHelp" class="">Ne mažiau, kaip 8 simboliai. Negali būti vien tik
+                    skaičiai</small>
+            </div>
+            <div class="">
+                <label for="password2">Pakartoti slaptažodį</label>
+                <input name="password2" type="password" class="" id="password2" aria-describedby="pwd2Help">
+            </div>
+            <button type="submit" class="">Registruotis</button>
+        <p>Jeigu užsiregistravote anksčiau, <a href="{% url 'login' %}"><strong>prisijunkite.</strong></a></p>
+        <div class="social">
+            <div class="go"><i class="fab fa-google"></i>  Google</div>
+            <div class="fb"><i class="fab fa-facebook"></i>  Facebook</div>
+          </div>
+        </form>
+    </div>
+
+{% endblock %}

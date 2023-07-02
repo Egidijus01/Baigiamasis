@@ -8,4 +8,5 @@ document.getElementById("profile").addEventListener("mousemove", function() {
 
   options.style.top = profilePicRect.bottom + "px";
   options.style.left = profilePicRect.left + "px";
+  options.style.zIndex = '2'
 });

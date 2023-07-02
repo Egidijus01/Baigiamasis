@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     {% load static %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
   <link rel="stylesheet" href="{% static 'css/base.css' %}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,7 +56,7 @@
             
           {% else %}
             <li class="nav-item"><a class="nav-link" href="{% url 'login'%}?next={{request.path}}">Prisijungti</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Registruotis</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Registruotis</a></li>
           {% endif %}
         </div>
                 
@@ -65,9 +67,19 @@
 
 
     <main>
-        <div class="content">{% block "content" %}{% endblock %}</div>
+        <div class="content">{% block "content" %}
+            {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'info' %}success{% endif %}" role="alert">
+                    {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+            
+            {% endblock %}</div>
     </main>
-    <footer>
+    <footer class="footer">
         All rights reserved
     </footer>
     <script src="{% static 'js/base.js'%}" defer></script>

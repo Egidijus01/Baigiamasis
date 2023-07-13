@@ -33,6 +33,26 @@ class Rating(models.Model):
         return self.rating
 
 
+class AvailableTimes(models.Model):
+    TIME_CHOICES = (
+        ("3 PM", "3 PM"),
+        ("3:30 PM", "3:30 PM"),
+        ("4 PM", "4 PM"),
+        ("4:30 PM", "4:30 PM"),
+        ("5 PM", "5 PM"),
+        ("5:30 PM", "5:30 PM"),
+        ("6 PM", "6 PM"),
+        ("6:30 PM", "6:30 PM"),
+        ("7 PM", "7 PM"),
+        ("7:30 PM", "7:30 PM"),
+    )
+    STATUS = (('g', 'galima'),
+                ('n', 'negalima')
+                )
+    day = models.DateField(default=datetime.now)
+    time = models.CharField(max_length=10, choices=TIME_CHOICES, default="3 PM")
+    status = models.CharField(max_length=1, choices=STATUS, blank=True, default='a', help_text='Statusas')
+
 class Barber(models.Model):
     name = models.CharField('Vardas', max_length=50, help_text='Kirpejo vardas')
     last_name = models.CharField('Pavarde', max_length=50, help_text='Kirpejo pavarde')
@@ -40,6 +60,7 @@ class Barber(models.Model):
     about = models.TextField('Apie', max_length=200, help_text='Apie kirpeja')
     login_name = models.CharField('Prisijungimo vardas', max_length=20)
     zipcode = models.CharField(max_length=200,blank=True, null=True)
+    times = models.ForeignKey('AvailableTimes', on_delete=models.SET_NULL, null=True, blank=True)
     city = models.CharField(max_length=200,blank=True, null=True)
     country = models.CharField(max_length=200,blank=True, null=True)
     adress = models.CharField(max_length=200,blank=True, null=True)
@@ -76,8 +97,6 @@ class Orders(models.Model):
     service_name = models.CharField('Paslauga', max_length=100, help_text='Teikiama paslauga')
     summary = models.CharField('Aprasymas', max_length=200)
     price = models.FloatField('Paslaugos kaina', blank=True, null=True)
-    day = models.DateField(default=datetime.now)
-    time = models.CharField(max_length=10, choices=TIME_CHOICES, default="3 PM")
     time_ordered = models.DateTimeField(default=datetime.now, blank=True)
     booker = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 

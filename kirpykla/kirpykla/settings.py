@@ -32,7 +32,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'library',
+    
+    'library.apps.LibraryConfig',
+    'crispy_forms',
+    'crispy_bootstrap4',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -114,6 +117,11 @@ EMAIL_HOST_USER = 'mano_pastas@gmail.com'
 EMAIL_HOST_PASSWORD = 'VerySecret'
 # slaptažodis
 
+
+GOOGLE_API_KEY = 'AIzaSyCDDojpSyc252fo8S8Xa4vQp44mKIuPZ1U'
+
+BASE_COUNTRY = 'LT'
+
 LOGIN_REDIRECT_URL = '/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'library/media')
@@ -138,3 +146,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Rating,Services,Available_times,Messages, Barber
+from .models import Rating,Orders,Messages, Barber, Profile
 # Register your models here.
 
 
@@ -9,7 +9,8 @@ class ReviewAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Rating, ReviewAdmin)
-admin.site.register(Services)
-admin.site.register(Available_times)
+
+admin.site.register(Orders)
 admin.site.register(Barber)
 admin.site.register(Messages)
+admin.site.register(Profile)

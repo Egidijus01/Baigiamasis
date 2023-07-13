@@ -1,8 +1,9 @@
 import uuid
-from datetime import datetime
+from datetime import date, datetime
 from django.contrib.auth.models import User
-
+from PIL import Image
 from django.db import models
+from django.urls import reverse
 
 # Create your models here.
 
@@ -38,6 +39,12 @@ class Barber(models.Model):
     email = models.EmailField('Elektroninis pastas')
     about = models.TextField('Apie', max_length=200, help_text='Apie kirpeja')
     login_name = models.CharField('Prisijungimo vardas', max_length=20)
+    zipcode = models.CharField(max_length=200,blank=True, null=True)
+    city = models.CharField(max_length=200,blank=True, null=True)
+    country = models.CharField(max_length=200,blank=True, null=True)
+    adress = models.CharField(max_length=200,blank=True, null=True)
+
+
 
     cover = models.ImageField('Viršelis', upload_to='covers', null=True, blank=True)
     def __str__(self):
@@ -49,14 +56,9 @@ class Barber(models.Model):
 class Messages(models.Model):
     pass
 
-class Services(models.Model):
-    service_name = models.CharField('Paslauga', max_length=100, help_text='Teikiama paslauga')
-    price = models.FloatField('Paslaugos kaina')
 
-    def __str__(self):
-        return f'{self.service_name} {self.price}'
 
-class Available_times(models.Model):
+class Orders(models.Model):
     TIME_CHOICES = (
         ("3 PM", "3 PM"),
         ("3:30 PM", "3:30 PM"),
@@ -69,12 +71,38 @@ class Available_times(models.Model):
         ("7 PM", "7 PM"),
         ("7:30 PM", "7:30 PM"),
     )
-
+    id = models.AutoField(primary_key=True)
     barber = models.ForeignKey(Barber, on_delete=models.SET_NULL, null=True, blank=True)
-    service = models.ManyToManyField(Services)
+    service_name = models.CharField('Paslauga', max_length=100, help_text='Teikiama paslauga')
+    summary = models.CharField('Aprasymas', max_length=200)
+    price = models.FloatField('Paslaugos kaina', blank=True, null=True)
     day = models.DateField(default=datetime.now)
     time = models.CharField(max_length=10, choices=TIME_CHOICES, default="3 PM")
     time_ordered = models.DateTimeField(default=datetime.now, blank=True)
+    booker = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
-    # def __str__(self):
-    #     return f"{self.user.login_name}| {self.barber.login_name} | day: {self.day} | time: {self.time}"
+
+    def is_overdue(self):
+        if self.time_ordered and date.today() > self.time_ordered:
+            return True
+        return False
+
+    def get_absolute_url(self):
+        return reverse('barber', args=[str(self.id)]) 
+
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    photo = models.ImageField(default='profile_pics/default.png', upload_to='profile_pics')
+
+    def __str__(self) -> str:
+        return f'{self.user.username} profilis'
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        img = Image.open(self.photo.path)
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.photo.path)

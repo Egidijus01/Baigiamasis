@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load crispy_forms_tags %}
 {% block "content" %}
     <div class="container barber">
     <h4>{{ barber.first_name }} {{ barber.last_name }}</h4>
@@ -14,13 +14,32 @@
     </div>
 </br>
 {% if user.is_authenticated %}
+
+<div class="content-section">
+  <form method="POST", action="">
+      {% csrf_token %}
+      <fieldset class="form-group">
+          <legend class="border-bottom mb-4">Naujas Uzsakymas</legend>
+          {{ form|crispy }}
+      </fieldset>
+      <div class="form-group">
+          <button class="btn btn-outline-info" type="submit">Uzsakyti</button>
+      </div>
+  </form>
+  </div>
+
+
+
+ 
+{% endif %}
+
+{% comment %}
 <form action="" method="post">
   {% csrf_token %} 
   {{ form }}  
   <input type="submit" value="Submit"> 
-</form> 
-{% endif %}
-
+</form>
+{% endcomment %}
 
 
 {% if barber.rating_set.all %}  

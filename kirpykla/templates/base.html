@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     {% load static %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
   <link rel="stylesheet" href="{% static 'css/base.css' %}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,13 +41,15 @@
                 
                 {% if user.is_authenticated %}
                 <li><a class="nav-link" href=""><i class="fa-solid fa-message"></i></a></li>
-                {{ user.get_username }}
-                <li><a class="nav-link profile"><img id="profile" src="{% static 'assets/no-image.png' %}" alt=""> </a>
+                <li><a class="nav-link" href="{% url 'profile' %}">{{ user.get_username }}</a></li>
+                <li><a class="nav-link" href="{% url 'my-borrowed' %}">Uzsakymai</a></li>
+                <li><a class="nav-link profile"><img id="profile" src="{{ user.profile.photo.url }}" alt=""> </a>
+
                     <div class="options" id="options">
                         <ul>
-                            <li>History</li>
-                            <li>hello</li>
-                            <li>Settings</li>
+                            <li><a href="">History</a></li>
+                            <li><a href="">hello</a></li>
+                            <li><a class="nav-link" href="{% url 'settings' %}">Settings</a></li>
                              <li><a class="nav-link" href="{% url 'logout'%}?next=/">Atsijungti</a></li>
 
                         </ul>

@@ -14,3 +14,5 @@ admin.site.register(Orders)
 admin.site.register(Barber)
 admin.site.register(Messages)
 admin.site.register(Profile)
+
+

@@ -1,3 +1,4 @@
+import datetime
 from django.forms import TextInput
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
@@ -9,7 +10,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
-from .forms import BarberReviewForm, UserUpdateForm, ProfileUpdateForm, CreateOrderForm
+from .forms import BarberReviewForm, UserUpdateForm, ProfileUpdateForm
 from .models import Rating, Orders
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -20,6 +21,8 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+
+from datetime import timedelta
 
 
 # Create your views here.
@@ -162,29 +165,160 @@ class OrderByUserDetailView(LoginRequiredMixin, DetailView):
 
 
 
-class barber(LoginRequiredMixin, CreateView):
-    model = Orders
-    success_url = "/myorders/"
-    template_name = 'barber.html'
-    form_class = CreateOrderForm
 
-    def form_valid(self, form):
-        form.instance.reader = self.request.user
-        return super().form_valid(form)
+import logging
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        single_barber = get_object_or_404(Barber, pk=self.kwargs['id'])
-        context['barber'] = single_barber
-        return context
+logger = logging.getLogger(__name__)
 
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.request = self.request
-        return form
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        single_barber = get_object_or_404(Barber, pk=self.kwargs['id'])
-        kwargs['barber'] = single_barber
-        kwargs['booker'] = self.request.user
-        return kwargs
+def barber(request, id):
+    single_barber = get_object_or_404(Barber, pk=id)
+    
+    if request.method=='POST':
+        
+        pass
+    
+
+    context = {
+        
+        
+        'barber': single_barber
+    }
+
+    return render(request, 'barber.html', context=context)
+
+
+def booking(request, id):
+    #Calling 'validWeekday' Function to Loop days you want in the next 21 days:
+    weekdays = validWeekday(22)
+    barber = get_object_or_404(Barber, pk=id)
+    #Only show the days that are not full:
+    validateWeekdays = isWeekdayValid(weekdays)
+    
+
+    if request.method == 'POST':
+        service = request.POST.get('service')
+        day = request.POST.get('day')
+        if service == None:
+            messages.success(request, "Please Select A Service!")
+            return redirect('booking', id=id)
+
+        #Store day and service in django session:
+        request.session['day'] = day
+        request.session['service'] = service
+
+        return redirect('bookingSubmit', id=id)
+
+
+    return render(request, 'booking.html', {
+            'weekdays':weekdays,
+            'validateWeekdays':validateWeekdays,
+            'barber': barber,
+        })
+
+def bookingSubmit(request, id):
+    barber = barber = get_object_or_404(Barber, pk=id)
+    user = request.user
+    times = [
+        "3 PM", "3:30 PM", "4 PM", "4:30 PM", "5 PM", "5:30 PM", "6 PM", "6:30 PM", "7 PM", "7:30 PM"
+    ]
+    today = datetime.datetime.now()
+    minDate = today.strftime('%Y-%m-%d')
+    deltatime = today + timedelta(days=21)
+    strdeltatime = deltatime.strftime('%Y-%m-%d')
+    maxDate = strdeltatime
+
+    #Get stored data from django session:
+    day = request.session.get('day')
+    service = request.session.get('service')
+    
+    #Only show the time of the day that has not been selected before:
+    hour = checkTime(times, day)
+    if request.method == 'POST':
+        time = request.POST.get("time")
+        date = dayToWeekday(day)
+
+        if service != None:
+            if day <= maxDate and day >= minDate:
+                if date == 'Monday' or date == 'Saturday' or date == 'Wednesday':
+                    if Orders.objects.filter(day=day).count() < 11:
+                        if Orders.objects.filter(day=day, time=time).count() < 1:
+                            AppointmentForm = Orders.objects.get_or_create(
+                                booker = user,
+                                barber = barber,
+                                service = service,
+                                day = day,
+                                time = time,
+                            )
+                            
+                            messages.success(request, "Orders Saved!")
+                            return redirect('index')
+                        else:
+                            messages.success(request, "The Selected Time Has Been Reserved Before!")
+                    else:
+                        messages.success(request, "The Selected Day Is Full!")
+                else:
+                    messages.success(request, "The Selected Date Is Incorrect")
+            else:
+                    messages.success(request, "The Selected Date Isn't In The Correct Time Period!")
+        else:
+            messages.success(request, "Please Select A Service!")
+
+
+    return render(request, 'booking-submit.html', {
+        'times':hour,
+        'barber': barber,
+    })
+
+
+def checkTime(times, day):
+    #Only show the time of the day that has not been selected before:
+    x = []
+    for k in times:
+        if Orders.objects.filter(day=day, time=k).count() < 1:
+            x.append(k)
+    return x
+
+def checkEditTime(times, day, id):
+    #Only show the time of the day that has not been selected before:
+    x = []
+    order = Orders.objects.get(pk=id)
+    time = order.time
+    for k in times:
+        if Orders.objects.filter(day=day, time=k).count() < 1 or time == k:
+            x.append(k)
+    return x
+
+
+def isWeekdayValid(x):
+    validateWeekdays = []
+    for j in x:
+        if Orders.objects.filter(day=j).count() < 10:
+            validateWeekdays.append(j)
+    return validateWeekdays
+
+def dayToWeekday(x):
+    z = datetime.datetime.strptime(x, "%Y-%m-%d")
+    y = z.strftime('%A')
+    return y
+
+def validWeekday(days):
+    #Loop days you want in the next 21 days:
+    today = datetime.datetime.now()
+    weekdays = []
+    for i in range (0, days):
+        x = today + timedelta(days=i)
+        y = x.strftime('%A')
+        if y == 'Monday' or y == 'Saturday' or y == 'Wednesday':
+            weekdays.append(x.strftime('%Y-%m-%d'))
+    return weekdays
+
+
+
+def chat(request):
+    return render(request, 'chat.html')
+
+
+def room(request, room_name):
+    return render(request, 'room.html', {
+        'room_name': room_name
+    })

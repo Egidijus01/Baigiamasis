@@ -1,6 +1,6 @@
 import uuid
 from datetime import date, datetime
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from PIL import Image
 from django.db import models
 from django.urls import reverse
@@ -33,25 +33,20 @@ class Rating(models.Model):
         return self.rating
 
 
-class AvailableTimes(models.Model):
-    TIME_CHOICES = (
-        ("3 PM", "3 PM"),
-        ("3:30 PM", "3:30 PM"),
-        ("4 PM", "4 PM"),
-        ("4:30 PM", "4:30 PM"),
-        ("5 PM", "5 PM"),
-        ("5:30 PM", "5:30 PM"),
-        ("6 PM", "6 PM"),
-        ("6:30 PM", "6:30 PM"),
-        ("7 PM", "7 PM"),
-        ("7:30 PM", "7:30 PM"),
-    )
-    STATUS = (('g', 'galima'),
-                ('n', 'negalima')
-                )
-    day = models.DateField(default=datetime.now)
-    time = models.CharField(max_length=10, choices=TIME_CHOICES, default="3 PM")
-    status = models.CharField(max_length=1, choices=STATUS, blank=True, default='a', help_text='Statusas')
+
+TIME_CHOICES = (
+    ("3 PM", "3 PM"),
+    ("3:30 PM", "3:30 PM"),
+    ("4 PM", "4 PM"),
+    ("4:30 PM", "4:30 PM"),
+    ("5 PM", "5 PM"),
+    ("5:30 PM", "5:30 PM"),
+    ("6 PM", "6 PM"),
+    ("6:30 PM", "6:30 PM"),
+    ("7 PM", "7 PM"),
+    ("7:30 PM", "7:30 PM"),
+)
+   
 
 class Barber(models.Model):
     name = models.CharField('Vardas', max_length=50, help_text='Kirpejo vardas')
@@ -60,11 +55,10 @@ class Barber(models.Model):
     about = models.TextField('Apie', max_length=200, help_text='Apie kirpeja')
     login_name = models.CharField('Prisijungimo vardas', max_length=20)
     zipcode = models.CharField(max_length=200,blank=True, null=True)
-    times = models.ForeignKey('AvailableTimes', on_delete=models.SET_NULL, null=True, blank=True)
     city = models.CharField(max_length=200,blank=True, null=True)
     country = models.CharField(max_length=200,blank=True, null=True)
     adress = models.CharField(max_length=200,blank=True, null=True)
-
+    group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True)
 
 
     cover = models.ImageField('Viršelis', upload_to='covers', null=True, blank=True)
@@ -80,22 +74,13 @@ class Messages(models.Model):
 
 
 class Orders(models.Model):
-    TIME_CHOICES = (
-        ("3 PM", "3 PM"),
-        ("3:30 PM", "3:30 PM"),
-        ("4 PM", "4 PM"),
-        ("4:30 PM", "4:30 PM"),
-        ("5 PM", "5 PM"),
-        ("5:30 PM", "5:30 PM"),
-        ("6 PM", "6 PM"),
-        ("6:30 PM", "6:30 PM"),
-        ("7 PM", "7 PM"),
-        ("7:30 PM", "7:30 PM"),
-    )
+
     id = models.AutoField(primary_key=True)
     barber = models.ForeignKey(Barber, on_delete=models.SET_NULL, null=True, blank=True)
-    service_name = models.CharField('Paslauga', max_length=100, help_text='Teikiama paslauga')
+    service = models.CharField('Paslauga', max_length=100, help_text='Teikiama paslauga')
     summary = models.CharField('Aprasymas', max_length=200)
+    day = models.DateField(default=datetime.now)
+    time = models.CharField(max_length=10, choices=TIME_CHOICES, default="3 PM")
     price = models.FloatField('Paslaugos kaina', blank=True, null=True)
     time_ordered = models.DateTimeField(default=datetime.now, blank=True)
     booker = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)

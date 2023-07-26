@@ -7,34 +7,20 @@
     <p>{{ barber.about }}</p>
     </hr>
     </br>
-    <!-- <h5>Mes turime šias {{ author.first_name }} {{ author.last_name }} knygas:</h5>
-    {% for i in author.books.all %}
-       <li>{{ i.title }}</li>
-    {% endfor %} -->
+
     </div>
 </br>
 {% if user.is_authenticated %}
 
-<div class="content-section">
-  <form method="POST", action="">
-      {% csrf_token %}
-      <fieldset class="form-group">
-          <legend class="border-bottom mb-4">Naujas Uzsakymas</legend>
-          {{ form|crispy }}
-      </fieldset>
-      <div class="form-group">
-          <button class="btn btn-outline-info" type="submit">Uzsakyti</button>
-      </div>
-  </form>
-  </div>
+
+<a class="book" href="{% url 'booking' id=barber.id %}">Uzsakyti</a>
 
 
-
- 
+  
 {% endif %}
 
 {% comment %}
-<form action="" method="post">
+<form action=" {% url 'my-borrowed' %}" method="post">
   {% csrf_token %} 
   {{ form }}  
   <input type="submit" value="Submit"> 

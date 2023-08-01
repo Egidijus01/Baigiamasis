@@ -1,8 +1,14 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block "content" %}
+
+
+<div class="background">
+    <div class="shape"></div>
+    <div class="shape"></div>
+</div>
     <div class="container barber">
-    <h4>{{ barber.first_name }} {{ barber.last_name }}</h4>
+    <h4>{{ barber.name }} {{ barber.last_name }}</h4>
     <hr/>
     <p>{{ barber.about }}</p>
     </hr>
@@ -16,7 +22,7 @@
 <a class="book" href="{% url 'booking' id=barber.id %}">Uzsakyti</a>
 
 
-  
+
 {% endif %}
 
 {% comment %}
@@ -35,5 +41,105 @@
       <p>{{ review.content }}</p> 
   {% endfor %}
 {% endif %}
+
+{% if user.is_authenticated %}
+<h4>Palikite atsiliepimą:</h4>
+    <form action="" method="post">
+      {% csrf_token %}
+      {{ form.as_p }}</br>
+      <input type="submit" value="Išsaugoti">
+    </form>  
+    {% endif %}
+<style>
+
+  .mapholder{
+      height: 500px;
+      width: 100%;
+  }
+  
+  #map {
+      height: 100%;
+    }
+  
+  
+  </style>
+  <script> 
+      let map;
+      function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+          center: { lat: 54.6872, lng: 25.279 },
+          zoom: 8,
+      });
+      }
+      window.initMap = initMap;
+  
+  </script>
+  
+  <script>
+      function initMap() {
+          map = new google.maps.Map(document.getElementById("map"), {
+              center: { lat: 54.6872, lng: 25.279 },
+              zoom: 10,
+          });
+  
+          $.ajax({
+              url: "{% url 'mydata' barber.id%}",
+              method: 'GET',
+              success: function (data) {
+                  console.log(data);
+                  addMarkers(data);
+              }
+          });
+      }
+  
+      function addMarkers(data) {
+          const geocoder = new google.maps.Geocoder();
+          const markers = [];
+  
+          data.forEach((item) => {
+              geocoder.geocode({ address: item.adress+','+item.city }, function (results, status) {
+                  if (status === google.maps.GeocoderStatus.OK) {
+                      const marker = new google.maps.Marker({
+                          position: results[0].geometry.location,
+                          map: map,
+                      });
+                      markers.push(marker);
+                  } else {
+                      console.error('Geocode was not successful for the following reason: ' + status);
+                  }
+              });
+          });
+      }
+  
+      window.initMap = initMap;
+  
+       
+  </script>
+  
+  
+  {% load static %}
+  
+  
+  
+  
+  
+  <div class="pageholder">
+      <div class="titleholder"> 
+          <div class="title"><i class="fas fa-compass mr-2"></i> Google Maps #4: Markers on a map </div>
+          <a href="{% url 'index'%}" class="title2 mr-4"><i class="fas fa-home mr-2"></i> Back to home </a>
+      </div>
+  
+      <div class="linkholder">
+          <div class="mapholder">
+              <div id="map"></div>
+                      <script
+                      src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap&v=weekly"
+                      defer
+                      ></script>
+          </div>
+      </div>
+  </div>
+  
+  </div>
 
 {% endblock %}

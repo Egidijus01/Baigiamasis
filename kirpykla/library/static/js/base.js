@@ -1,12 +1,36 @@
+var isOptionsVisible = false;
+var profile = document.getElementById("profile");
+var options = document.getElementById("options");
+var optionsTimeout;
 
-document.getElementById("profile").addEventListener("mousemove", function() {
-  var options = document.getElementById("options");
-  options.style.display = (options.style.display === "block") ? "none" : "block";
+profile.addEventListener("mouseenter", function() {
+  isOptionsVisible = true;
+  updateOptionsPosition();
+  options.style.display = "block";
+});
 
-  var profilePic = document.getElementById("profile");
-  var profilePicRect = profilePic.getBoundingClientRect();
+profile.addEventListener("mouseleave", function() {
+  // Add a small delay before hiding the options pop-up
+  optionsTimeout = setTimeout(function() {
+    isOptionsVisible = false;
+    options.style.display = "none";
+  }, 200);
+});
 
+profile.addEventListener("mousemove", function(event) {
+  if (isOptionsVisible) {
+    updateOptionsPosition();
+  }
+});
+
+options.addEventListener("mouseenter", function() {
+  // Clear the timeout to prevent hiding the pop-up when mouse is over options
+  clearTimeout(optionsTimeout);
+});
+
+function updateOptionsPosition() {
+  var profilePicRect = profile.getBoundingClientRect();
   options.style.top = profilePicRect.bottom + "px";
   options.style.left = profilePicRect.left + "px";
-  options.style.zIndex = '2'
-});
+  options.style.zIndex = "2";
+}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block "content" %}
+<div class="background">
+  <div class="shape"></div>
+  <div class="shape"></div>
+  <img src="{% static 'assets/blob-1.gif'%}" alt="">
+</div>
+
+  <h1>Create a new Post</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }} 
+    <button type="submit">Save</button>
+  </form>
+{% endblock %}

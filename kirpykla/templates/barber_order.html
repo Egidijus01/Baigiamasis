@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block "content" %}
+
+<div class="background">
+  <div class="shape"></div>
+  <div class="shape"></div>
+</div>
+<h1>Mano paimta knyga:</h1>
+    <hr>
+        <ul>
+        <img class="rounded-circle" src="{{order.barber.cover.url}}">
+        <li><strong class="">Pavadinimas: {{order.booker.username}}</strong></li>
+        
+        <br/>
+      </li>
+    </ul>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block "content" %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+<div class="background">
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <img src="{% static 'assets/blob-1.gif'%}" alt="">
+</div>
+<div class="content-section">
+    <div class="media">
+        <img class="rounded" src="{{ user.profile.photo.url }}">
+        <div class="media-body">
+            <h2 class="account-heading">{{ user.username }}</h2>
+            <p class="text-secondary">{{ user.email }}</p>
+        </div>
+    </div>
+    <form method="post" enctype="multipart/form-data" action="{% url 'profile' %}">
+        {% csrf_token %}
+        <!-- Username Field -->
+        <div class="form-group">
+            <label for="{{ u_form.username.id_for_label }}">Username:</label>
+            <input type="text" name="{{ u_form.username.name }}" value="{{ u_form.username.value }}">
+        </div>
+
+        <!-- Email Field -->
+        <div class="form-group">
+            <label for="{{ u_form.email.id_for_label }}">Email:</label>
+            <input type="email" name="{{ u_form.email.name }}" value="{{ u_form.email.value }}">
+        </div>
+
+        <!-- Photo Field -->
+        <div class="form-group">
+            <label for="{{ p_form.photo.id_for_label }}">Photo:</label>
+            <input type="file" name="{{ p_form.photo.name }}" accept="image/*">
+        </div>
+
+        <!-- Submit Button -->
+        <button class="btn btn-outline-info" type="submit">Atnaujinti</button>
+    </form>
+</div>
+{% endblock %}

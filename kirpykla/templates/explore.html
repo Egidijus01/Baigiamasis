@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block "content" %}
+
+
+<div class="background">
+    <div class="shape"></div>
+    <div class="shape"></div>
+    
+</div>
+<img src="{% static 'assets/blob-1.gif'%}" alt="">
+<link rel="stylesheet" href="{% static 'css/explore.css' %}">
+<div id="data-container">
+    <!-- Data will be loaded here -->
+</div>
+
+<script>
+     var isLoading = false;
+    var nextPage = 2;
+    var reachedEnd = false;  // To keep track if all data has been loaded
+
+    function loadNextPage() {
+        if (isLoading || reachedEnd) return; // Prevent multiple simultaneous requests and loading after reaching the end
+
+        isLoading = true;
+        $.ajax({
+            url: '/get_paginated_data/',
+            data: { page: nextPage },
+            dataType: 'html',
+            success: function (data) {
+                isLoading = false;
+                var container = $('#data-container');
+                if (data.trim()) {
+                    container.append(data);
+                    nextPage += 1;
+                } else {
+                    reachedEnd = true; // All data has been loaded
+                    $(window).off('scroll', onScroll);
+                }
+            },
+            error: function () {
+                isLoading = false;
+            }
+        });
+    }
+
+    function onScroll() {
+        if ($(window).scrollTop() + $(window).height() >= $(document).height() - 300) {
+            loadNextPage();
+        }
+    }
+
+    $(window).on('scroll', onScroll);
+    loadNextPage();
+</script>
+{% endblock %}

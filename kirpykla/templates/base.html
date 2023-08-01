@@ -22,6 +22,7 @@
         <nav class="navigacija">
             <div class="logo-container">
                 {% load static %}
+                {% load user_tags %}
               <a href="{%url 'index'%}"><img id="logo" src="{% static 'assets/logo.png' %}"  alt=""></a>
               
             </div>
@@ -32,8 +33,10 @@
                         <input class="search" name="query" class="form-control" type="text" placeholder="Paieška">
                         </form>
                     </li>
-                    <li><a class="nav-link" href="{%url 'index'%}">Home</a></li>
-                    <li><a class="nav-link" href="{%url 'barbers'%}">Barbers</a></li>
+                    
+                    <li><a class="nav-link" href="{%url 'barbers'%}">Kirpėjai</a></li>
+                    <li><a class="nav-link" href="{%url 'explore'%}">Atrask</a></li>
+
                     
                 </div>
                 <div class="logged">
@@ -42,14 +45,24 @@
                 {% if user.is_authenticated %}
                 <li><a class="nav-link" href=""><i class="fa-solid fa-message"></i></a></li>
                 <li><a class="nav-link" href="{% url 'profile' %}">{{ user.get_username }}</a></li>
-                <li><a class="nav-link" href="{% url 'my-borrowed' %}">Uzsakymai</a></li>
+                
                 <li><a class="nav-link profile"><img id="profile" src="{{ user.profile.photo.url }}" alt=""> </a>
 
                     <div class="options" id="options">
                         <ul>
-                            <li><a href="">History</a></li>
-                            <li><a href="">hello</a></li>
-                            <li><a class="nav-link" href="{% url 'settings' %}">Settings</a></li>
+                            {% if user|in_kirpejai_group %}
+                            <li><a class="nav-link" href="{% url 'barber-orders' %}">Užsakymai</a></li>
+                            {% else %}
+                            <li><a class="nav-link" href="{% url 'my-borrowed' %}">Užsakymų istorija</a></li>
+                            
+                            {% endif %}
+                            
+                            {% if user|in_kirpejai_group %}
+                            <li><a class="nav-link" href="{% url 'my_posts' user.id %}">Mano įrašai</a></li>
+                            {% endif %}
+                            <li><a class="nav-link" href="{% url 'settings' %}">Nustatymai</a></li>
+                            <li><a class="nav-link" href="">DUK</a></li>
+
                              <li><a class="nav-link" href="{% url 'logout'%}?next=/">Atsijungti</a></li>
 
                         </ul>

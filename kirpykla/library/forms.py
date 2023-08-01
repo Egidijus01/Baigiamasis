@@ -1,4 +1,4 @@
-from .models import Rating, Profile, Orders
+from .models import Rating, Profile, Orders, Barber, Posts
 from django import forms
 from django.contrib.auth.models import User
 
@@ -14,31 +14,9 @@ class BarberReviewForm(forms.ModelForm):
         }
 
 class UserUpdateForm(forms.ModelForm):
-    email = User
     class Meta:
         model = User
         fields = ['username', 'email']
-
-
-# class TimeSelectionForm(forms.ModelForm):
-    
-#     class Meta:
-#         model = AvailableTimes
-#         fields = ['day', 'time']
-
-# class OrderSelectForm(forms.ModelForm):
-    
-#     class Meta:
-#         model = Orders
-#         fields = ['barber', 'service_name', 'summary', 'booker']
-
-#         widgets = {
-#             'barber': forms.HiddenInput(),
-#             'booker': forms.HiddenInput()
-
-#         }
-
-
 
 
 
@@ -48,3 +26,16 @@ class ProfileUpdateForm(forms.ModelForm):
         model = Profile
         fields = ['photo']
 
+class BarberForm(forms.ModelForm):
+    class Meta:
+        model = Barber
+        fields = '__all__'
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Posts
+        fields = 'hero', 'content', 'photo', 'author'
+        widgets = {
+            'author': forms.HiddenInput()
+
+        }

@@ -120,12 +120,10 @@ footer {
     position: absolute;
     top: 100%;
     left: 0;
-    background-color: #5cdb95;
+    background-color: #A0C49D;
     color: #05386b;
-    /* border: 1px solid #ccc; */
     padding: 5px;
     display: none;
-    transition: opacity 0.3s ease-in-out;
   }
   
   .options ul {

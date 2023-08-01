@@ -1,0 +1,9 @@
+{% for post in data_page %}
+<div class="card">
+    <h2>{{post.hero}}</h2>
+    <img class="cover" src="{{post.photo.url}}" alt="">
+    <p>{{ post.content }}</p>
+    
+</div>
+
+{% endfor %}

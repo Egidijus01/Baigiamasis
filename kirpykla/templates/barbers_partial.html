@@ -1,0 +1,11 @@
+{% for barber in data_page %}
+            <div class="card">
+                
+                <img class="cover" src="{{ barber.cover.url }}" class="card-img-top" alt="...">
+                
+                <a class="name" href="{% url 'barber' barber.id %}">{{ barber.name }} {{ barber.last_name }}</a>
+                <p class="rating">{{ barber.rating }}/5</p>
+    
+            </div>
+            
+{% endfor %}

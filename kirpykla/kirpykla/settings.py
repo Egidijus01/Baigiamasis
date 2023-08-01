@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'library.apps.LibraryConfig',
     'crispy_forms',
     'crispy_bootstrap4',
-    'channels',
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -74,7 +74,7 @@ TEMPLATES = [
 ]
 
 # WSGI_APPLICATION = 'kirpykla.wsgi.application'
-ASGI_APPLICATION = "config.asgi.application"
+# ASGI_APPLICATION = "config.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -118,11 +118,21 @@ AUTH_PASSWORD_VALIDATORS = [
 #     },
 # }
 
+ASGI_APPLICATION = "kirpykla.asgi.application"
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('127.0.0.1', 6379)],
+#         },
+#     },
+# }
 CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
 }
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

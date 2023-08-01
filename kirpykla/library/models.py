@@ -49,10 +49,11 @@ TIME_CHOICES = (
    
 
 class Barber(models.Model):
-    name = models.CharField('Vardas', max_length=50, help_text='Kirpejo vardas')
-    last_name = models.CharField('Pavarde', max_length=50, help_text='Kirpejo pavarde')
-    email = models.EmailField('Elektroninis pastas')
-    about = models.TextField('Apie', max_length=200, help_text='Apie kirpeja')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    name = models.CharField('Vardas', max_length=50)
+    last_name = models.CharField('Pavardė', max_length=50)
+    email = models.EmailField('Elektroninis paštas')
+    about = models.TextField('Apie', max_length=200)
     login_name = models.CharField('Prisijungimo vardas', max_length=20)
     zipcode = models.CharField(max_length=200,blank=True, null=True)
     city = models.CharField(max_length=200,blank=True, null=True)
@@ -65,11 +66,34 @@ class Barber(models.Model):
     def __str__(self):
         return f'{self.name} {self.last_name}'
 
+    def resize_cover_image(self):
+        if not self.cover:
+            return
+
+        max_size = (300, 300)  # Set the maximum size for the image (width, height)
+
+        with Image.open(self.cover.path) as img:
+            img.thumbnail(max_size, Image.ANTIALIAS)
+            img.save(self.cover.path)
+
+
+class Posts(models.Model):
+    hero = models.CharField('Antraste', max_length=100, help_text="ANTRASTE")
+    content = models.TextField('Turinys', max_length=500, help_text='TURINYS')
+    photo = models.ImageField(default='posts_pics/default.png', upload_to='posts_pics')
+    author = models.ForeignKey(Barber, on_delete=models.SET_NULL, null=True, blank=True)
+    date_created = models.DateTimeField(auto_now_add=True)
 
 
 
-class Messages(models.Model):
-    pass
+class ChatRoom(models.Model):
+    name = models.CharField(max_length=255)
+
+class Message(models.Model):
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    chat_room = models.ForeignKey(ChatRoom, on_delete=models.CASCADE)
 
 
 
@@ -86,8 +110,11 @@ class Orders(models.Model):
     booker = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
 
+    def __str__(self) -> str:
+        return f"{self.day} - {self.time}    {self.barber}"
+
     def is_overdue(self):
-        if self.time_ordered and date.today() > self.time_ordered:
+        if self.time_ordered and date.today() > self.time_ordered: # type: ignore
             return True
         return False
 
@@ -110,3 +137,15 @@ class Profile(models.Model):
             output_size = (300, 300)
             img.thumbnail(output_size)
             img.save(self.photo.path)
+
+class BarberTimeSlotAvailability(models.Model):
+    barber = models.ForeignKey(Barber, on_delete=models.CASCADE)
+    day = models.DateField()
+    time = models.CharField(max_length=10, choices=TIME_CHOICES)
+    is_available = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ['barber', 'day', 'time']
+
+    def __str__(self):
+        return f"{self.barber} - {self.day} - {self.time}"

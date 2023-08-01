@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+{% block "content" %}
+
+<div class="background">
+  <div class="shape"></div>
+  <div class="shape"></div>
+</div>
+    <h1>Mano uzsakymai</h1>
+    {% if orders %}
+        {% for order in orders %}
+        
+    <hr>
+        <ul>
+        <li><strong class="">Kirpejas: {{order.barber.name}} {{order.barber.last_name}}</strong></li>
+        <li>Paslauga: {{ order.service }}</li>
+       <li>Laikas {{order.time}}</li>
+        <br/>
+        <a class="btn btn-primary" href="{{ order.pk }}" role="button">Peržiūrėti</a>
+      </li>
+
+    </ul>
+{% endfor %}
+    {% else %}
+      <p>Uzsakymu kol kas nera.</p>
+    {% endif %}
+{% endblock %}

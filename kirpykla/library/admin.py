@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Rating,Orders,Messages, Barber, Profile
+from .models import Rating,Orders,Message, Barber, Profile, Posts
 # Register your models here.
 
 
@@ -12,7 +12,8 @@ admin.site.register(Rating, ReviewAdmin)
 
 admin.site.register(Orders)
 admin.site.register(Barber)
-admin.site.register(Messages)
+admin.site.register(Message)
 admin.site.register(Profile)
+admin.site.register(Posts)
 
 

@@ -3,6 +3,13 @@
 {% block "content" %}
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/barbers.css' %}">
+
+<div class="background">
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <img class="blob-1" src="{% static 'assets/blob-1.gif'%}" alt="">
+</div>
+
 <div class="cards">
 {% for barber in barbers %}
             <div class="card">

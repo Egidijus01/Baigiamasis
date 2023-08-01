@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block "content" %}
+
+<div class="background">
+  <div class="shape"></div>
+  <div class="shape"></div>
+</div>
+<h1>Delete Post</h1>
+  <p>Are you sure you want to delete this post?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+  </form>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block "content" %}
+
+<div class="background">
+  <div class="shape"></div>
+  <div class="shape"></div>
+</div>
+  <h1>Create a new Post</h1>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }} 
+    <button type="submit">Create</button>
+</form>
+{% endblock %}

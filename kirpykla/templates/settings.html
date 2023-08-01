@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block "content" %}
+{% load static %}
+<div class="background">
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <img src="{% static 'assets/blob-1.gif'%}" alt="">
+</div>
+<a href="{% url 'become_barber' %}">Become a barber</a>
+
+
+{% endblock %}

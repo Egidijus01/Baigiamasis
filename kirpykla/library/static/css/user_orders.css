@@ -1,0 +1,38 @@
+.card{
+    
+    width: 70%;
+    border-radius: 10px;
+    background-color: rgba(255,255,255,0.13);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255,255,255,0.1);
+    box-shadow: 0 0 40px rgba(8,7,16,0.6);
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+    justify-content:space-around;
+}
+
+.img{
+    border-radius: 10px;
+height: 100px;
+}
+
+.card > .info > ul{
+    list-style: none;
+}
+.cards{
+    margin-top: 20px;
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.price{
+    font-size: 24px;
+    color: #05386b;
+}
+h1{
+    text-align: center;
+}

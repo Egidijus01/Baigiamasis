@@ -19,7 +19,7 @@
                 <img src="{% static 'assets/no-image.png' %}" class="card-img-top">
                 {% endif %}
                 <a class="name" href="{% url 'barber' barber.id %}">{{ barber.name }} {{ barber.last_name }}</a>
-                <p class="rating">{{ barber.rating }}/5</p>
+                <p class="rating">{{ barber.calculate_average_rating|default:0 }}/5</p>
     
             </div>
             

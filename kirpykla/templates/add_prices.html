@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block "content" %}
+
+
+
+
+{% for service in services %}
+
+<p>{{service.service_name}}</p>
+<p>{{service.service_price}}</p>
+
+
+{% endfor %}
+
+
+<form method="post" action="{% url 'add_prices' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p}}
+    <button type="submit">Pridėti</button>
+
+</form>
+
+
+{% endblock %}

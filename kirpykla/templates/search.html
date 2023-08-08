@@ -1,23 +1,52 @@
 {% extends "base.html" %}
 
 {% block "content" %}
+
+<style>
+  .content{
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content:space-around;
+  }
+
+
+  .card{
+    width: 70%;
+    border-radius: 10px;
+    background-color: rgba(255,255,255,0.13);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255,255,255,0.1);
+    box-shadow: 0 0 40px rgba(8,7,16,0.6);
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+    justify-content:space-around;
+  }
+</style>
+
+
+
+
   <h1>Paieškos pagal "{{query}}" rezultatai:</h1>
   </br>
   {% load static %}
   {% if barbers %}
-  <ul>
+  
     {% for barber in barbers %}
-      <li>
-        {% if barber.cover %}
-                <img class="cover" src="{{ barber.cover.url }}" class="card-img-top" alt="...">
-                {% else %}
-                <img src="{% static 'assets/no-image.png' %}" class="card-img-top">
-                {% endif %}
-                <a class="name" href="{% url 'barber' barber.id %}">{{ barber.name }} {{ barber.last_name }}</a>
-    
-      </li>
+      <div class="card">
+        <img style="border-radius: 10px;" class="cover" src="{{ barber.cover.url }}" class="card-img-top" alt="...">
+                
+        <a style="font-size: 18px;" class="name" href="{% url 'barber' barber.id %}">{{ barber.name }} {{ barber.last_name }}</a>
+
+      </div>
+        
+
+      
     {% endfor %}
-  </ul>
+
   {% else %}
     <p>Oops. Nieko neradome :(</p>
   {% endif %}

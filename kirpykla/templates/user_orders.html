@@ -2,24 +2,41 @@
 {% load static %}
 {% block "content" %}
 
+
+<link rel="stylesheet" href="{% static 'css/user_orders.css' %}">
+
+
 <div class="background">
   <div class="shape"></div>
   <div class="shape"></div>
 </div>
-    <h1>Mano uzsakymai</h1>
+
+    <h1 >Mano uzsakymai</h1>
+    <div class="cards">
+
+    
     {% if orders %}
         {% for order in orders %}
         
-    <hr>
-        <ul>
+    <div class="card">
+      <img class="img" src="{{order.barber.cover.url}}" alt="">
+      <div class="info">
+           <ul>
         <li><strong class="">Kirpejas: {{order.barber.name}} {{order.barber.last_name}}</strong></li>
-        <li>Paslauga: {{ order.service }}</li>
-       <li>Laikas {{order.time}}</li>
+        <li>Paslauga: {{ order.service.service_name }}</li>
+        <li>Data: {{order.day}}</li>
+       
+        <li>Laikas: {{order.time}}</li>
         <br/>
         <a class="btn btn-primary" href="{{ order.pk }}" role="button">Peržiūrėti</a>
       </li>
 
     </ul>
+      </div>
+      <p class="price">{{order.service.service_price}}&euro;</p>
+     
+  </div>
+</div>
 {% endfor %}
     {% else %}
       <p>Uzsakymu kol kas nera.</p>

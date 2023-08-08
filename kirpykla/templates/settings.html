@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load user_tags %}
 {% block "content" %}
 {% load static %}
 <div class="background">
@@ -7,7 +7,17 @@
     <div class="shape"></div>
     <img src="{% static 'assets/blob-1.gif'%}" alt="">
 </div>
+{% if user|in_kirpejai_group %}
+<a href="{% url 'barber_profile' %}">Modifikuoti profilį</a>
+<a href="{% url 'add_prices' %}">Pridėti kainoraštį</a>
+
+
+{% else %}
+
 <a href="{% url 'become_barber' %}">Become a barber</a>
+
+
+{% endif %}
 
 
 {% endblock %}

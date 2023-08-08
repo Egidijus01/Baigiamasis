@@ -4,7 +4,7 @@ from django.forms import TextInput
 from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from django.urls import reverse
-from .models import Barber, Posts
+from .models import Barber, Posts, Services
 from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Q
@@ -12,7 +12,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import User, Group
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
-from .forms import BarberReviewForm, UserUpdateForm, ProfileUpdateForm, BarberForm, PostForm
+from .forms import BarberReviewForm, UserUpdateForm, ProfileUpdateForm, BarberForm, PostForm, ServiceForm
 from .models import Rating, Orders, ChatRoom, Message, BarberTimeSlotAvailability
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -33,17 +33,6 @@ from django.http import HttpResponse, JsonResponse
 def index(request):
     return render(request, 'index.html')
 
-
-
-# def get_paginated_data_barbers(request):
-#     data_list = Barber.objects.all()
-#     data_list = list(data_list)  # Convert the queryset to a list
-#     random.shuffle(data_list)   # Randomly shuffle the list
-#     paginator = Paginator(data_list, 10)
-#     page_number = request.GET.get('page')
-#     data_page = paginator.get_page(page_number)
-
-#     return render(request, 'barbers_partial.html', {'data_page': data_page})
 
 def barber_list(request):
     paginator = Paginator(Barber.objects.all(), 4)
@@ -90,7 +79,7 @@ def register(request):
 
                     
                     messages.info(request, f'Vartotojas "{username}" sekmingai uzregistruotas')
-                    return redirect('login')
+                    return redirect('index')
 
             
 
@@ -175,7 +164,7 @@ def loaned_orders_for_barber(request):
 
 @login_required
 def order_by_user_detail_view_for_barber(request, pk):
-    order = get_object_or_404(Orders, pk=pk, booker=request.user)
+    order = get_object_or_404(Orders, pk=pk, barber=request.user.barber)
     return render(request, 'barber_order.html', {'order': order})
 
 
@@ -222,13 +211,17 @@ def barber(request, id):
 
     key = settings.GOOGLE_API_KEY
     
+    stars = range(1, 6)
 
     context = {
         
         'key':key,
         'barber': single_barber,
-        'form': form
+        'form': form,
+        'services': single_barber.services.all(),
+        'stars':stars
     }
+
 
     return render(request, 'barber.html', context=context)
 
@@ -239,7 +232,7 @@ def booking(request, id):
     barber = get_object_or_404(Barber, pk=id)
     #Only show the days that are not full:
     validateWeekdays = isWeekdayValid(weekdays)
-    
+    services = barber.services.all()
 
     if request.method == 'POST':
         service = request.POST.get('service')
@@ -254,11 +247,13 @@ def booking(request, id):
 
         return redirect('bookingSubmit', id=id)
 
+    print(services)
 
     return render(request, 'booking.html', {
             'weekdays':weekdays,
             'validateWeekdays':validateWeekdays,
             'barber': barber,
+            'services': services
         })
 
 def bookingSubmit(request, id):
@@ -280,6 +275,12 @@ def bookingSubmit(request, id):
     # Only show the time of the day that is available for the specific barber
     hour = checkTime(times, day, barber)
 
+    # service_instance = None
+    # if service:
+    #     services_of_barber = 
+    #     if services_of_barber.exists():
+    #         service_instance = services_of_barber.first()
+    service_instance = None
     if request.method == 'POST':
         time = request.POST.get("time")
         date = dayToWeekday(day)
@@ -290,10 +291,13 @@ def bookingSubmit(request, id):
                     if Orders.objects.filter(day=day).count() < 11:
                         if Orders.objects.filter(barber=barber, day=day, time=time).count() < 1:
                             # Create the order
+                            service_instance_qs = barber.services.filter(service_name=service)
+                            if service_instance_qs.exists():
+                                service_instance = service_instance_qs.first()
                             appointment = Orders.objects.create(
                                 booker=user,
                                 barber=barber,
-                                service=service,
+                                service=service_instance,
                                 day=day,
                                 time=time,
                             )
@@ -321,6 +325,8 @@ def bookingSubmit(request, id):
         'times': hour,
         'barber': barber,
     })
+
+
 
 
 def checkTime(times, day, barber):
@@ -365,15 +371,10 @@ def validWeekday(days):
     return weekdays
 
 
+def get_available_times(barber, day):
+    available_times = BarberTimeSlotAvailability.objects.filter(barber=barber, day=day, is_available=True)
+    return available_times
 
-# def chat(request):
-#     return render(request, 'chat.html')
-
-
-# def room(request, room_name):
-#     return render(request, 'room.html', {
-#         'room_name': room_name
-#     })
 
 
 @login_required
@@ -386,15 +387,40 @@ def room(request, room_name):
     
   return render(request, 'room.html', {'room_name': room_name, 'username': username})
 
+
 def become_barber(request):
+    user = request.user
+ 
+
+
     if request.method == 'POST':
-        form = BarberForm(request.POST)
+        form = BarberForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            Barber.objects.create(
+                user = user,
+                name = form.cleaned_data['name'],
+                last_name = form.cleaned_data['last_name'],
+                email = user.email,
+                about = form.cleaned_data['about'],
+                login_name = user.username,
+                zipcode = form.cleaned_data['zipcode'],
+                city = form.cleaned_data['city'],
+                country = form.cleaned_data['country'],
+                adress = form.cleaned_data['adress'],
+                group = Group.objects.get(name='kirpejai'),
+                cover = form.cleaned_data['cover']
+            )
+            kirpejai_group = Group.objects.get(name='kirpejai')
+            user.groups.add(kirpejai_group)
+            
+            
             return redirect('barbers')  # Redirect to the list view after successfully creating the Barber object
     else:
         form = BarberForm()
     return render(request, 'become_barber.html', {'form': form})
+
+
+
 
 def my_posts(request, id):
     user = get_object_or_404(User, pk=id)
@@ -472,3 +498,41 @@ def get_paginated_data(request):
 
 def explore(request):
     return render(request, 'explore.html')
+
+
+def update_barber_page(request):
+    if request.method == 'POST':
+        form = BarberForm(request.POST, request.FILES, instance=request.user.barber)
+        if form.is_valid():
+            form.save()
+            return redirect('barber_profile')
+    else:
+        form = BarberForm(instance=request.user.barber)
+
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'edit_barber_profile.html', context=context)
+
+
+def add_prices(request):
+    barber = request.user.barber
+    if request.method == 'POST':
+        form = ServiceForm(request.POST)
+        if form.is_valid():
+            service = form.save(commit=False)
+            service.save()
+
+            barber.services.add(service)
+            return redirect('add_prices')
+    else:
+        form = ServiceForm()
+
+    services = barber.services.all()
+
+    context = {'form': form,
+               'services': services}
+
+    return render(request, 'add_prices.html', context=context)

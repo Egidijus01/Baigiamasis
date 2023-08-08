@@ -27,7 +27,6 @@
  <h3>Vartotojas:</h3>
 {{ form.username }}
 
-
  Slaptažodis:
  {{ form.password }}
 
@@ -35,8 +34,8 @@
 <input type="submit" value="Prisijungti" />
 <input type="hidden" name="next" value="{{ next }}" />
         <div class="social">
-      <div class="go"><i class="fab fa-google"></i>  Google</div>
-      <div class="fb"><i class="fab fa-facebook"></i>  Facebook</div>
+      <div class="go"><a href="{% provider_login_url 'google' %}"><i class="fab fa-google"></i>  Google</a></div>
+      
     </div>
     <p><a href="{% url 'password_reset' %}">Pamiršote slaptažodį?</a></p>
 </form>

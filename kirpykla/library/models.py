@@ -4,8 +4,13 @@ from django.contrib.auth.models import User, Group
 from PIL import Image
 from django.db import models
 from django.urls import reverse
+from django.db.models import Avg
 
 # Create your models here.
+
+
+
+
 
 class Rating(models.Model):
     barber = models.ForeignKey('Barber', on_delete=models.SET_NULL, null=True, blank=True)
@@ -35,18 +40,41 @@ class Rating(models.Model):
 
 
 TIME_CHOICES = (
-    ("3 PM", "3 PM"),
-    ("3:30 PM", "3:30 PM"),
-    ("4 PM", "4 PM"),
-    ("4:30 PM", "4:30 PM"),
-    ("5 PM", "5 PM"),
-    ("5:30 PM", "5:30 PM"),
-    ("6 PM", "6 PM"),
-    ("6:30 PM", "6:30 PM"),
-    ("7 PM", "7 PM"),
-    ("7:30 PM", "7:30 PM"),
+    ("08:00 AM", "08:00 AM"),
+        ("08:30 AM", "08:30 AM"),
+        ("09:00 AM", "09:00 AM"),
+        ("09:30 AM", "09:30 AM"),
+        ("10:00 AM", "10:00 AM"),
+        ("10:30 AM", "10:30 AM"),
+        ("11:00 AM", "11:00 AM"),
+        ("11:30 AM", "11:30 AM"),
+        ("12:00 PM", "12:00 PM"),
+        ("12:30 PM", "12:30 PM"),
+        ("01:00 PM", "01:00 PM"),
+        ("01:30 PM", "01:30 PM"),
+        ("02:00 PM", "02:00 PM"),
+        ("02:30 PM", "02:30 PM"),
+        ("03:00 PM", "03:00 PM"),
+        ("03:30 PM", "03:30 PM"),
+        ("04:00 PM", "04:00 PM"),
+        ("04:30 PM", "04:30 PM"),
+        ("05:00 PM", "05:00 PM"),
+        ("05:30 PM", "05:30 PM"),
+        ("06:00 PM", "06:00 PM"),
+        ("06:30 PM", "06:30 PM"),
+        ("07:00 PM", "07:00 PM"),
+        ("07:30 PM", "07:30 PM"),
+        ("08:00 PM", "08:00 PM"),
+
 )
    
+
+
+
+class Services(models.Model):
+    service_name = models.CharField('Paslauga', max_length=50)
+    service_price = models.FloatField('Kaina', max_length=20)
+
 
 class Barber(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
@@ -59,12 +87,20 @@ class Barber(models.Model):
     city = models.CharField(max_length=200,blank=True, null=True)
     country = models.CharField(max_length=200,blank=True, null=True)
     adress = models.CharField(max_length=200,blank=True, null=True)
+    services = models.ManyToManyField(Services, null=True, blank=True)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True, blank=True)
-
-
-    cover = models.ImageField('Viršelis', upload_to='covers', null=True, blank=True)
+    cover = models.ImageField('Viršelis', upload_to='covers', null=True, blank=True, default='default.png')
     def __str__(self):
         return f'{self.name} {self.last_name}'
+
+    @property
+    def calculate_average_rating(self):
+        average_rating = Rating.objects.filter(barber=self).aggregate(Avg('rating'))['rating__avg']
+        if average_rating is None:
+            average_rating = 0  # Set default value if there are no reviews
+        return average_rating
+
+
 
     def resize_cover_image(self):
         if not self.cover:
@@ -75,6 +111,25 @@ class Barber(models.Model):
         with Image.open(self.cover.path) as img:
             img.thumbnail(max_size, Image.ANTIALIAS)
             img.save(self.cover.path)
+
+
+
+
+class BarberTimeSlotAvailability(models.Model):
+    barber = models.ForeignKey(Barber, on_delete=models.CASCADE)
+    day = models.DateField()
+    time = models.CharField(max_length=10, choices=TIME_CHOICES)
+    is_available = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ['barber', 'day', 'time']
+
+    def __str__(self):
+        return f"{self.barber} - {self.day} - {self.time}"
+
+
+
+
 
 
 class Posts(models.Model):
@@ -101,9 +156,9 @@ class Orders(models.Model):
 
     id = models.AutoField(primary_key=True)
     barber = models.ForeignKey(Barber, on_delete=models.SET_NULL, null=True, blank=True)
-    service = models.CharField('Paslauga', max_length=100, help_text='Teikiama paslauga')
-    summary = models.CharField('Aprasymas', max_length=200)
+    service = models.ForeignKey(Services, on_delete=models.SET_NULL, null=True, blank=True)
     day = models.DateField(default=datetime.now)
+    # time = models.ForeignKey(Time, on_delete=models.CASCADE)
     time = models.CharField(max_length=10, choices=TIME_CHOICES, default="3 PM")
     price = models.FloatField('Paslaugos kaina', blank=True, null=True)
     time_ordered = models.DateTimeField(default=datetime.now, blank=True)
@@ -137,15 +192,3 @@ class Profile(models.Model):
             output_size = (300, 300)
             img.thumbnail(output_size)
             img.save(self.photo.path)
-
-class BarberTimeSlotAvailability(models.Model):
-    barber = models.ForeignKey(Barber, on_delete=models.CASCADE)
-    day = models.DateField()
-    time = models.CharField(max_length=10, choices=TIME_CHOICES)
-    is_available = models.BooleanField(default=True)
-
-    class Meta:
-        unique_together = ['barber', 'day', 'time']
-
-    def __str__(self):
-        return f"{self.barber} - {self.day} - {self.time}"

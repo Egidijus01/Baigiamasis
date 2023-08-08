@@ -1,29 +1,73 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block "content" %}
+{% load static %}
+{% load custom_filters %}
+<link rel="stylesheet" href="{% static 'css/barber.css' %}">
 
 
-<div class="background">
-    <div class="shape"></div>
-    <div class="shape"></div>
-</div>
     <div class="container barber">
-    <h4>{{ barber.name }} {{ barber.last_name }}</h4>
+    <div class="image-holder", style="background-image: url({{barber.cover.url}});">
+      
+    </div>
+        <h4>{{ barber.name }} {{ barber.last_name }}</h4>
     <hr/>
     <p>{{ barber.about }}</p>
     </hr>
-    </br>
+    
+    <a class="book btn btn-success" href="{% url 'booking' id=barber.id %}">Uzsakyti</a>
 
     </div>
 </br>
+
+
+
+
+
 {% if user.is_authenticated %}
 
 
-<a class="book" href="{% url 'booking' id=barber.id %}">Uzsakyti</a>
 
 
 
 {% endif %}
+
+<div class="services">
+    {% if services %}
+    {% for service in services %}
+    <div class="cont">
+        <p class="service_name">{{service.service_name}}</p>
+        <p class="service_price">{{service.service_price}}</p>
+
+    </div>
+    {% endfor %}
+    {% else %}
+    <p class="service_name">Paslaugų kol kas nėra</p>
+    {% endif %}
+
+
+</div>
+
+
+<div class="ratings">
+    <h4>Vidutinis vartotojų įvertinimas</h4>
+    
+    <div>
+        <div>
+          {% for star in stars %}
+        {% if barber.calculate_average_rating >= star %}
+            <span class="fa fa-star checked"></span>
+        {% else %}
+            <span class="fa fa-star"></span>
+        {% endif %}
+    {% endfor %}  
+        </div>
+        
+    <p>{{barber.calculate_average_rating}}</p>
+    </div>
+    
+</div>
+
 
 {% comment %}
 <form action=" {% url 'my-borrowed' %}" method="post">
@@ -34,12 +78,27 @@
 {% endcomment %}
 
 
-{% if barber.rating_set.all %}  
-  {% for review in barber.rating_set.all %}   
-      <hr> 
-      <p><strong>{{ review.reviewer }}</strong>, {{ review.date_created }} {{review.rating}}</p>
-      <p>{{ review.content }}</p> 
-  {% endfor %}
+{% if barber.rating_set.all %}
+    {% for review in barber.rating_set.all %}
+        <hr>
+        <div class="ratin">
+        <p><strong>{{ review.reviewer }}</strong>, {{ review.date_created }}</p>
+
+            {% for star in stars %}
+        {% if review.rating|convert_int >= star %}
+            <span class="fa fa-star checked"></span>
+        {% else %}
+            <span class="fa fa-star"></span>
+            {% endif %}
+        {% endfor %}
+
+
+
+
+           
+        </div>
+        <p>{{ review.content }}</p>
+    {% endfor %}
 {% endif %}
 
 {% if user.is_authenticated %}

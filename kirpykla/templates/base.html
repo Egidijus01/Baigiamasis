@@ -51,6 +51,8 @@
                     <div class="options" id="options">
                         <ul>
                             {% if user|in_kirpejai_group %}
+                            <li><a class="nav-link" href="{% url 'barber' user.barber.id %}">Kirpėjo profilis</a></li>
+                            
                             <li><a class="nav-link" href="{% url 'barber-orders' %}">Užsakymai</a></li>
                             {% else %}
                             <li><a class="nav-link" href="{% url 'my-borrowed' %}">Užsakymų istorija</a></li>

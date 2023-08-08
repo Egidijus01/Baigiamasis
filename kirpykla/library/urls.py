@@ -1,6 +1,20 @@
 from django.urls import path, include
-
+from django.contrib.auth.views import LogoutView
 from . import views
+
+
+from allauth.account.views import SignupView, LoginView, PasswordResetView
+
+class MySignupView(SignupView):
+    template_name = 'signup.html'
+
+class MyLoginView(LoginView):
+    template_name = 'login.html'
+
+class MyPasswordResetView(PasswordResetView):
+    template_name = 'password_reset.html'
+
+
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -29,7 +43,12 @@ urlpatterns = [
     path('explore', views.explore, name='explore'),
     path('get_paginated_data/', views.get_paginated_data, name='get_paginated_data'),
     path('barberorders/', views.loaned_orders_for_barber, name='barber-orders'),
-    path('myorders/<int:pk>', views.order_by_user_detail_view_for_barber, name='barber-order'),
+    path('barberorders/<int:pk>', views.order_by_user_detail_view_for_barber, name='barber-orders'),
+    path('accounts/', include('allauth.urls')),
+    path('barber-profile/', views.update_barber_page, name='barber_profile'),
+    path('add-prices/', views.add_prices, name='add_prices')
+
+
 
 
 

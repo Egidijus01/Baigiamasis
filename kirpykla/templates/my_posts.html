@@ -2,24 +2,41 @@
 {% load static %}
 
 {% block "content" %}
+
+<link rel="stylesheet" href="{% static 'css/my_posts.css' %}">
+
+
 <div class="background">
+<img class="blob" src="{% static 'assets/blob-1.gif'%}" alt="">
+
     <div class="shape"></div>
     <div class="shape"></div>
-    <img src="{% static 'assets/blob-1.gif'%}" alt="">
 </div>
-<a class="book" href="{% url 'create_post' user.id %}">Sukurti</a>
+
+
+<div class="crea">
+    <a class="book btn btn-success" href="{% url 'create_post' user.id %}">Sukurti</a>
+</div>
+<div class="posts">
+
+
 
     {% for post in posts %}
         <div class="post">
-            <h2>{{post.hero}}</h2>
-            <p>{{ post.content }}</p>
-            <img src="{{post.photo.url}}" alt="">
-            <a href="{% url 'update_post' id=post.id %}">Edit Post</a>
-            <a href="{% url 'delete_post' id=post.id %}">Delete</a>
+            <div class="info">
+                <h2>{{post.hero}}</h2>
+                <p>{{ post.content }}</p>
+                <img src="{{post.photo.url}}" alt="">
+            </div>
+            <div class="buttons">
+                <a class="edit" href="{% url 'update_post' id=post.id %}">Edit Post</a>
+                <a class="delete" href="{% url 'delete_post' id=post.id %}">Delete</a>
+            </div>
         </div>
-        
-    {% endfor %}
 
+
+    {% endfor %}
+</div>
 
     <div class="pagination">
         <span class="step-links">

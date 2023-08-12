@@ -10,3 +10,7 @@ def create_range(value):
 @register.filter(name='convert_int')
 def convert_int(value):
     return int(value)
+
+@register.filter(name='round_to_two')
+def round_to_two(value):
+    return round(value, 2)

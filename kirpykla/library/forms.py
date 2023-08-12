@@ -1,6 +1,8 @@
 from .models import Rating, Profile, Orders, Barber, Posts, Services
 from django import forms
 from django.contrib.auth.models import User
+from django.forms import TextInput, FileInput, Textarea
+from django.forms import SelectMultiple
 
 
 class BarberReviewForm(forms.ModelForm):
@@ -9,7 +11,15 @@ class BarberReviewForm(forms.ModelForm):
         fields = 'rating', 'content', 'barber', 'reviewer'
         widgets = {
             'barber': forms.HiddenInput(),
-            'reviewer': forms.HiddenInput()
+            'reviewer': forms.HiddenInput(),
+            'content': Textarea(attrs={
+                    'class': "md-textarea form-control",
+                    'rows': '3',
+                
+                    }),
+          
+
+
 
         }
 
@@ -33,7 +43,52 @@ class BarberForm(forms.ModelForm):
     class Meta:
         model = Barber
         fields = '__all__'
-        exclude = ['email', 'user', 'login_name', 'group']
+        exclude = ['email', 'user', 'login_name', 'group', 'services']
+        
+        widgets = {
+            'name': TextInput(attrs={
+                'class': "form-control",
+                'style': 'max-width: 300px;',
+                'placeholder': 'Vardas'
+                }),
+            'last_name': TextInput(attrs={
+                'class': "form-control", 
+                'style': 'max-width: 300px;',
+                'placeholder': 'Pavarde'
+                }),
+            'about': TextInput(attrs={
+                'class': "form-control", 
+                'style': 'max-width: 300px;',
+                'placeholder': 'Pavarde'
+                }),
+            'zipcode': TextInput(attrs={
+                'class': "form-control", 
+                'style': 'max-width: 300px;',
+                'placeholder': 'Pavarde'
+                }),
+            'city': TextInput(attrs={
+                'class': "form-control", 
+                'style': 'max-width: 300px;',
+                'placeholder': 'Pavarde'
+                }),
+            'country': TextInput(attrs={
+                'class': "form-control", 
+                'style': 'max-width: 300px;',
+                'placeholder': 'Pavarde'
+                }),
+            'adress': TextInput(attrs={
+                'class': "form-control", 
+                'style': 'max-width: 300px;',
+                'placeholder': 'Pavarde'
+                }),
+            'cover': FileInput(attrs={
+                'class': "formFile mt-4", 
+                'style': 'max-width: 300px;',
+                'placeholder': 'Pavarde'
+                })
+        }
+
+
 
         # widgets = {
         #     'user': forms.HiddenInput(),

@@ -7,15 +7,18 @@
 
 
     <div class="container barber">
-    <div class="image-holder", style="background-image: url({{barber.cover.url}});">
+        <div class="image-holder", style="background-image: url({{barber.cover.url}});">
       
     </div>
-        <h4>{{ barber.name }} {{ barber.last_name }}</h4>
-    <hr/>
-    <p>{{ barber.about }}</p>
-    </hr>
+    <div class="info">
+            <h4>{{ barber.name }} {{ barber.last_name }}</h4>
+            <hr/>
+            <p>{{ barber.about }}</p>
+        
+    </div>
     
-    <a class="book btn btn-success" href="{% url 'booking' id=barber.id %}">Uzsakyti</a>
+    
+    <a class="book btn btn-success" href="{% url 'booking' id=barber.id %}">Užsakyti</a>
 
     </div>
 </br>
@@ -63,7 +66,7 @@
     {% endfor %}  
         </div>
         
-    <p>{{barber.calculate_average_rating}}</p>
+    <p>{{barber.calculate_average_rating|round_to_two}}</p>
     </div>
     
 </div>
@@ -102,13 +105,27 @@
 {% endif %}
 
 {% if user.is_authenticated %}
+<div class="forma">
+
+
+
+
 <h4>Palikite atsiliepimą:</h4>
     <form action="" method="post">
       {% csrf_token %}
       {{ form.as_p }}</br>
-      <input type="submit" value="Išsaugoti">
+      <input class="btn btn-primary" type="submit" value="Išsaugoti">
     </form>  
     {% endif %}
+<div class="drops">
+    <div class="drop drop-1"></div>
+    <div class="drop drop-2"></div>
+    <div class="drop drop-3"></div>
+    <div class="drop drop-4"></div>
+    <div class="drop drop-5"></div>
+  </div>
+
+</div>
 <style>
 
   .mapholder{

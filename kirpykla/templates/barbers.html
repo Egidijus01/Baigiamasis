@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load custom_filters %}
 {% block "content" %}
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/barbers.css' %}">
@@ -19,7 +19,7 @@
                 <img src="{% static 'assets/no-image.png' %}" class="card-img-top">
                 {% endif %}
                 <a class="name" href="{% url 'barber' barber.id %}">{{ barber.name }} {{ barber.last_name }}</a>
-                <p class="rating">{{ barber.calculate_average_rating|default:0 }}/5</p>
+                <p class="rating">{{ barber.calculate_average_rating|default:0|round_to_two }}/5</p>
     
             </div>
             

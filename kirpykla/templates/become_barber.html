@@ -6,7 +6,35 @@
   <h1>Tapk vienu iš mūsų</h1>
   <form method="post" action="{% url 'become_barber' %}" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}  <!-- Render the form fields as paragraphs -->
-    <button type="submit">Prisijungti</button>
+    <div class="row">
+      <div class="col-md-6"> <!-- First Column -->
+          {{ form.name.label_tag }}
+          {{ form.name }}
+          {{ form.last_name.label_tag }}
+          {{ form.last_name }}
+          {{ form.about.label_tag }}
+          {{ form.about }}
+          <!-- Add more fields for the first column -->
+      </div>
+      <div class="col-md-6"> <!-- Second Column -->
+          {{ form.zipcode.label_tag }}
+          {{ form.zipcode }}
+          {{ form.city.label_tag }}
+          {{ form.city }}
+          {{ form.country.label_tag }}
+          {{ form.country }}
+          <!-- Add more fields for the second column -->
+      </div>
+      
+        
+  </div>
+  <div class="row"> <!-- New row for the file input -->
+    <div class="col-md-6 offset-md-3"> <!-- Center the file input -->
+        {{ form.cover.label_tag }}
+        {{ form.cover }}
+    </div>
+</div>
+
+    <button class="offset-md-4 mt-4 btn btn-success"  type="submit">Prisijungti</button>
   </form>
 {% endblock %}

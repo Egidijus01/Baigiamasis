@@ -55,3 +55,8 @@
     right: -30px;
     bottom: -80px;
 }
+.blob{
+    top: 80%;
+    position: absolute;
+    background-repeat: calc(0.2%);
+}

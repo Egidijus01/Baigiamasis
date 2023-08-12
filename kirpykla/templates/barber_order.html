@@ -1,18 +1,39 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block "content" %}
+
+<link rel="stylesheet" href="{% static 'css/user_order.css' %}">
+
 
 <div class="background">
   <div class="shape"></div>
   <div class="shape"></div>
 </div>
-<h1>Mano paimta knyga:</h1>
-    <hr>
+<h1>Užsakymas</h1>
+    <div class="card">
+
+
+    
         <ul>
-        <img class="rounded-circle" src="{{order.barber.cover.url}}">
-        <li><strong class="">Pavadinimas: {{order.booker.username}}</strong></li>
+          <img class="" src="{{order.booker.profile.photo.url}}">
+       
+        <li>Vardas: <a href="">{{order.booker.username}}</a></li>
+        <li>Pavardė: {{order.barber.last_name}}</li>
+        <li>Paslauga: {{order.service.service_name}}</li>
+        <li>Laikas: {{order.day}}, {{order.time}}</li>
+        <li>Kaina: {{order.service.service_price}}&euro;</li>
+        <li>Adresas: {{order.barber.adress}}</li>
+
         
         <br/>
       </li>
+    
+
     </ul>
+    <a href="{% url 'barber-orders' %}" class="button">
+      <span>Atgal</span>
+
+    </a>
+    
+  </div>
 {% endblock %}

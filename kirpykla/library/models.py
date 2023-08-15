@@ -180,7 +180,10 @@ class Orders(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100, null=True, blank=True)
     photo = models.ImageField(default='profile_pics/default.png', upload_to='profile_pics')
+    friends = models.ManyToManyField('Friends', null=True, blank=True, related_name='My_friends')
+
 
     def __str__(self) -> str:
         return f'{self.user.username} profilis'
@@ -192,3 +195,21 @@ class Profile(models.Model):
             output_size = (300, 300)
             img.thumbnail(output_size)
             img.save(self.photo.path)
+
+
+class Friends(models.Model):
+    profile = models.OneToOneField(Profile, on_delete=models.CASCADE, related_name='Mano_draugai')
+
+    def __str__(self):
+        return self.profile.user.username
+
+
+class ChatMessage(models.Model):
+    body = models.TextField()
+    msg_sender = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='msg_sender')
+    msg_receiver = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='receiver')
+    seen = models.BooleanField(default=False)
+
+
+    def __str__(self) -> str:
+        return self.body

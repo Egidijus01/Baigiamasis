@@ -43,7 +43,7 @@
 
                 
                 {% if user.is_authenticated %}
-                <li><a class="nav-link" href=""><i class="fa-solid fa-message"></i></a></li>
+                <li><a class="nav-link" href=" {% url 'testukas' %}"><i class="fa-solid fa-message"></i></a></li>
                 <li><a class="nav-link" href="{% url 'profile' %}">{{ user.get_username }}</a></li>
                 
                 <li><a class="nav-link profile"><img id="profile" src="{{ user.profile.photo.url }}" alt=""> </a>
@@ -101,5 +101,34 @@
         All rights reserved
     </footer>
     <script src="{% static 'js/base.js'%}" defer></script>
+    <script>
+
+    setInterval(getNotification, 1000)
+
+function getNotification(){
+    let url = '{% url "notification"  %}'
+
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            console.log(data); // Check the array of notification counts
+            let chatNotificationButton = document.getElementsByClassName('msg')
+            
+            for(let i=0;i<data.length;i++){
+                if (chatNotificationButton[i] !== 0){
+                    let el = document.querySelector('.fa-message')
+                    el.classList.add('notif')
+                } else {
+                    let el = document.querySelector('.fa-message')
+                    el.classList.remove('notif')
+                
+            }
+        } 
+        })
+        .catch(error => {
+            
+        });
+}
+    </script>
 </body>
 </html>

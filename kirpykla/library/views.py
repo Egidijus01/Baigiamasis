@@ -1,4 +1,5 @@
 import datetime
+import json
 import random
 from django.forms import TextInput
 from django.shortcuts import render, get_object_or_404
@@ -12,8 +13,8 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import User, Group
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
-from .forms import BarberReviewForm, UserUpdateForm, ProfileUpdateForm, BarberForm, PostForm, ServiceForm
-from .models import Rating, Orders, ChatRoom, Message, BarberTimeSlotAvailability
+from .forms import BarberReviewForm, UserUpdateForm, ProfileUpdateForm, BarberForm, PostForm, ServiceForm, ChatMessageForm
+from .models import ChatMessage ,Profile, Rating, Orders, ChatRoom, Message, BarberTimeSlotAvailability, Friends
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.views.generic import (
@@ -75,10 +76,16 @@ def register(request):
 
                     return redirect('register')
                 else:
-                    User.objects.create_user(username=username, email=email, password=password)
+                    user = User.objects.create_user(username=username, email=email, password=password)
+                    
+                    # Create the associated profile
+                    profile = user.profile
+                    
+                    # Optionally create additional related objects
+                    Friends.objects.create(profile=profile)
 
                     
-                    messages.info(request, f'Vartotojas "{username}" sekmingai uzregistruotas')
+                    messages.info(request, f'Vartotojas "{username}" sekmingai uzregistruotas') # type: ignore
                     return redirect('index')
 
             
@@ -536,3 +543,104 @@ def add_prices(request):
                'services': services}
 
     return render(request, 'add_prices.html', context=context)
+
+
+def testukas(request):
+    user = request.user
+    friends = user.profile.friends.all()
+
+    context = {
+        'user': user,
+        'friends': friends,
+    }
+
+    return render(request, 'testaas.html', context)
+
+@login_required
+def testas_detail(request, pk):
+    friend = Friends.objects.get(profile_id=pk)
+    user = request.user.profile
+    profile = Profile.objects.get(id=friend.profile.id)
+    chats = ChatMessage.objects.all()
+    rec_chats = ChatMessage.objects.filter(msg_sender=profile, msg_receiver=user)
+    rec_chats.update(seen=True)
+    
+    form = ChatMessageForm()
+
+    if request.method == "POST":
+        
+        form = ChatMessageForm(request.POST)
+        if form.is_valid():
+            chat_message = form.save(commit=False)
+            chat_message.msg_sender = user
+            chat_message.msg_receiver = profile
+            chat_message.save()
+            return redirect('testas_detail', pk=friend.profile.id)
+
+    context = { 'friend': friend,
+               'form': form,
+               'user':user,
+               'profile':profile,
+               'chats':chats,
+               'num': rec_chats.count()
+               }
+    return render(request ,'testas_detail.html', context)
+
+def sentMessages(request, pk):
+    friend = Friends.objects.get(profile_id=pk)
+    profile = Profile.objects.get(id=friend.profile.id)
+    user = request.user.profile
+    data = json.loads(request.body)
+    new_chat = data['msg']
+    new_chat_message = ChatMessage.objects.create(
+        body=new_chat,
+        msg_sender = user,
+        msg_receiver = profile,
+        seen=False
+        )
+    print(new_chat)
+    return JsonResponse(new_chat_message.body, safe=False)
+
+
+def receivedMessages(request, pk):
+    friend = Friends.objects.get(profile_id=pk)
+    profile = Profile.objects.get(id=friend.profile.id)
+    user = request.user.profile
+    arr = []
+    
+    chats = ChatMessage.objects.filter(msg_sender=profile, msg_receiver=user)
+    for chat in chats:
+        arr.append(chat.body)
+
+    return JsonResponse(arr, safe=False)
+
+
+def chatNotification(request):
+    user = request.user.profile
+    friends = user.friends.all()
+    arr = []
+    for friend in friends:
+        chats = ChatMessage.objects.filter(msg_sender__id=friend.profile.id, msg_receiver=user, seen=False)
+        arr.append(chats.count())
+    
+    return JsonResponse(arr, safe=False)
+
+def add_friend(request, pk):
+    user_profile = request.user.profile
+    
+    try:
+        barber = Barber.objects.get(id=pk)
+    except Barber.DoesNotExist:
+        return HttpResponse("Barber not found")
+    
+    real_user_profile = barber.user.profile
+    
+    # Create a Friends instance for the real_user_profile
+    friends_instance = Friends.objects.get(profile=real_user_profile)
+    user_friends_inst = Friends.objects.get(profile=user_profile)
+    
+    # Add the Friends instance to the user_profile's friends
+    user_profile.friends.add(friends_instance)
+    real_user_profile.friends.add(user_friends_inst)
+    
+    return redirect('index') 

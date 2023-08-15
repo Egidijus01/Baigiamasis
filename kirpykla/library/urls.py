@@ -5,14 +5,6 @@ from . import views
 
 from allauth.account.views import SignupView, LoginView, PasswordResetView
 
-class MySignupView(SignupView):
-    template_name = 'signup.html'
-
-class MyLoginView(LoginView):
-    template_name = 'login.html'
-
-class MyPasswordResetView(PasswordResetView):
-    template_name = 'password_reset.html'
 
 
 
@@ -31,10 +23,7 @@ urlpatterns = [
     path('myorders/<int:pk>', views.order_by_user_detail_view, name='my-book'),
     path('barbers/<int:id>/booking/', views.booking, name='booking'),
     path('barbers/<int:id>/booking/booking-submit/', views.bookingSubmit, name='bookingSubmit'),
-    # path("chat/" , views.chat),
-    # path('chat/<str:room_name>/', views.room, name='room'),
-    path('chat/', views.chat_room_list, name='chat_room_list'),
-    path('chat/<str:room_name>/', views.room, name='room'),
+
     path('becomebarber', views.become_barber, name='become_barber'),
     path('my-posts/<int:id>', views.my_posts, name='my_posts'),
     path('my-posts/<int:id>/create/', views.create_post, name='create_post'),
@@ -46,14 +35,15 @@ urlpatterns = [
     path('barberorders/<int:pk>', views.order_by_user_detail_view_for_barber, name='barber-orders'),
     path('accounts/', include('allauth.urls')),
     path('barber-profile/', views.update_barber_page, name='barber_profile'),
-    path('add-prices/', views.add_prices, name='add_prices')
+    path('add-prices/', views.add_prices, name='add_prices'),
+    path('chat/', views.testukas, name='testukas'),
+    path('chat/<int:pk>', views.testas_detail, name='testas_detail'),
+    path('sent_msg/<int:pk>', views.sentMessages, name='sent_msg'),
+    path('rec_msg/<int:pk>', views.receivedMessages, name='rec_msg'),
+    path('notification/', views.chatNotification, name='notification'),
+    path('add_friend/<int:pk>', views.add_friend, name='add_friend'),
 
 
-
-
-
-
-    # path('get_paginated_data_barbers/', views.get_paginated_data_barbers, name='get_paginated_data_barbers'),
 
 
 

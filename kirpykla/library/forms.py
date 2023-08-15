@@ -1,4 +1,4 @@
-from .models import Rating, Profile, Orders, Barber, Posts, Services
+from .models import Rating, Profile, Orders, Barber, Posts, Services, ChatMessage
 from django import forms
 from django.contrib.auth.models import User
 from django.forms import TextInput, FileInput, Textarea
@@ -128,3 +128,9 @@ class PostForm(forms.ModelForm):
 
 
 
+class ChatMessageForm(forms.ModelForm):
+    body = forms.CharField(widget=forms.Textarea(attrs={'class':'inp', 'rows':'2', 'placeholder': 'type message here'}))
+    
+    class Meta:
+        model = ChatMessage
+        fields = ['body', ]

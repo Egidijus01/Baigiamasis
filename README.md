@@ -1,1 +1,3 @@
-# test
+# Barbershop marketplace
+
+This Python Django-based web application leverages Google authentication, Google Maps integration, and adheres to the MVC design pattern. It offers a unique user experience with distinct user roles, including service providers and clients grouped accordingly. Service providers can create posts, showcasing their services, while clients can reserve specific services for particular times. Additionally, clients can rate and provide feedback on the service providers, ensuring transparency and accountability in the service ecosystem. The project combines essential features for both service seekers and providers, fostering a dynamic online service marketplace.
